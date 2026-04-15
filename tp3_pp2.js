@@ -57,7 +57,6 @@ class DetalleOrden {
         this.producto_id = producto_id;
         this.cantidad = cantidad;
         this.precio_unitario = precio_unitario;
-        this.OrdenCompra = [];
     }
 }
 
