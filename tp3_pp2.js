@@ -474,7 +474,7 @@ function simularCompra(
   cupon_id,
   datosEnvio,
   metodoPago,
-  pagoAprobado = true,
+  pagoAprobado = null,
 ) {
   const carrito = lista_carritos[id_carrito];
   if (!carrito) {
@@ -509,26 +509,22 @@ function simularCompra(
   );
 
   console.info(`\n🟠 PROCESANDO PAGO`);
-  const pago = procesarPago(orden, metodoPago, pagoAprobado);
+  let pago = procesarPago(orden, metodoPago, pagoAprobado);
 
   if (pago.estado_pago === "Aprobado") {
     envio.estado_envio = "En preparación";
-
     console.info(`\n🟠 EMITIENDO TICKET`);
     emitirTicket(orden, pago, envio);
-
     console.info(`🟠 ENVIANDO MAIL DE CONFIRMACIÓN`);
     enviarMailConfirmacion(orden);
   } else {
-    const reintentar = false;
-    if (reintentar) {
-      console.log(`🔄 El usuario elige reintentar el pago...`);
-    } else {
-      orden.estado_compra = "Cancelada";
-      console.log(
-        `🚫 Compra cancelada. Orden #${orden.id_orden} marcada como cancelada.`,
-      );
-    }
+    orden.estado_compra = "Cancelada";
+    console.log(`❌ El pago fue rechazado.`);
+    console.log(
+      `🚫 Compra cancelada. Orden #${orden.id_orden} marcada como cancelada.`,
+    );
+    console.log("¿Desea reintentar el pago? (s/n)");
+    console.log("Redirigiendo a seleccionar método de pago...");
   }
 }
 

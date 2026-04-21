@@ -128,6 +128,7 @@ simularCompra(
     codigo_postal: "C1043",
   },
   "Tarjeta de crédito",
+  true, // pagoAprobado (aprobado)
 );
 
 // ═══════════════════════════════════════════════════════════════
@@ -165,4 +166,5 @@ simularCompra(
     codigo_postal: "X5000",
   },
   "Transferencia bancaria",
+  false, // pagoAprobado (rechazado)
 );
