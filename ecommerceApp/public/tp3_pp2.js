@@ -108,11 +108,13 @@ function descuentoCupon(cupon_id) {
 // ─────────────────────────────────────────────────────────────
 
 class Producto {
-  constructor(id_producto, nombre, precio, stock) {
+  constructor(id_producto, nombre, precio, stock, img, descuento = 0) {
     this.id_producto = id_producto;
     this.nombre = nombre;
     this.precio = precio;
     this.stock = stock;
+    this.img = img;
+    this.descuento = descuento; // porcentaje (ej: 10 para 10%)
   }
 }
 
