@@ -1,4 +1,3 @@
-
 // server.js - El motor de nuestra aplicación
 import express from 'express';
 const app = express();
