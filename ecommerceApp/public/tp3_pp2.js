@@ -121,7 +121,7 @@ const lista_productos = {};
 
 function crearProducto(objetoProducto) {
   lista_productos[objetoProducto.id_producto] = objetoProducto;
-  console.log(`📦 El producto ${objetoProducto.nombre} ha sido creado`);
+  // console.log(`📦 El producto ${objetoProducto.nombre} ha sido creado`);
 }
 
 function buscarProducto(id_producto) {
@@ -170,7 +170,7 @@ class Carrito {
         );
         restarStockProducto(id_producto, cantidad);
         console.log(
-          `✔️  El item ${producto.nombre} se agregó ${cantidad} vez/veces`,
+          // `✔️  El item ${producto.nombre} se agregó ${cantidad} vez/veces`,
         );
       } else {
         console.log(`❌ Stock insuficiente del producto ${producto.nombre}`);
@@ -181,14 +181,14 @@ class Carrito {
   }
 }
 
-const lista_carritos = {};
+const lista_carritos = [];
 
 function crearCarrito(id_carrito, id_usuario) {
-  const usuario = buscarUsuario(id_usuario);
+  const usuario = id_usuario; //buscarUsuario(id_usuario);
   if (usuario) {
     const carrito = new Carrito(id_carrito, usuario);
     lista_carritos[carrito.id_carrito] = carrito;
-    console.log(`🛒 El carrito de ${usuario.nombre} se creó correctamente`);
+    return carrito;
   } else {
     console.log(`Se produjo un error`);
   }
@@ -339,6 +339,7 @@ function generarOrden(id_carrito, cupon_id) {
 
   let detalleCounter = 1;
   for (const item of carrito.ItemCarrito) {
+    
     const detalle = new DetalleOrden(
       id_orden,
       detalleCounter++,
@@ -373,7 +374,7 @@ function generarOrden(id_carrito, cupon_id) {
   );
 
   orden.estado_compra = "Generada";
-  buscarUsuario(sesion.usuario_id).OrdenCompra.push(orden);
+  // buscarUsuario(sesion.usuario_id).OrdenCompra.push(orden);
 
   console.log(`📋 Orden de compra generada:`);
   console.log(`   ID Orden  : ${orden.id_orden}`);
