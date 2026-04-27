@@ -255,6 +255,10 @@ function crearCarrito(id_carrito, id_usuario) {
   }
 }
 
+function buscarCarrito(id_carrito) {
+  return lista_carritos[id_carrito] || false;
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  7. CHECKOUT
 // ═══════════════════════════════════════════════════════════════
@@ -500,27 +504,142 @@ function ordenesProbarSistema() {
 // ═══════════════════════════════════════════════════════════════
 //  9. CLASE_21/04/26
 // ═══════════════════════════════════════════════════════════════
+let container_html;
 
-// Agregar los productos del listado en main.js
+const formato = new Intl.NumberFormat("es-AR", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+function traerDivHtml() {
+  container_html = document.getElementById("catalogo");
+  if (!container_html) {
+    throw new Error("No se encontró el contenedor #catalogo");
+  }
+}
+
+function crearCards() {
+  const DOMparalelo = document.createDocumentFragment();
+  Object.values(lista_productos).forEach(objetoProducto => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.style = "width: 18rem";
+    if (objetoProducto.tieneDescuento) {
+      div.innerHTML =
+        `
+                <div class="position-relative">
+                    <span class="position-absolute top-0 end-0 badge px-3 py-2 bg-danger">
+                        ${objetoProducto.descuento}% OFF
+                    </span>
+                    <img src="${objetoProducto.img}"
+                        class="card-img-top imgProducto" alt="...">
+                </div>
+                <div class="card-body d-flex flex-column gap-1">
+                    <h4 class="card-title text-center">${objetoProducto.nombre}</h4>
+                    <div class="d-flex gap-2 justify-content-center align-items-center mb-2">
+                        <h4 class="text-success-emphasis m-0">$${formato.format(objetoProducto.precioFinal)}</h4>
+                        <h6 class="text-decoration-line-through text-body-tertiary m-0">$${formato.format(objetoProducto.precio)}</h6>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary btn-minus" type="button">-</button>
+                        <input type="number" class="form-control text-center cantidad" value="1" min="1" max="${objetoProducto.stock}">
+                        <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a href="" class="btn btn-primary btnAgregarCarrito" id="${objetoProducto.id_producto}">Agregar al carrito</a>
+                    </div>
+                </div>
+            `;
+    }
+    else {
+      div.innerHTML =
+        `
+                <div>
+                    <img src="${objetoProducto.img}"
+                        class="card-img-top imgProducto" alt="...">
+                </div>
+                <div class="card-body d-flex flex-column gap-1">
+                    <h4 class="card-title text-center">${objetoProducto.nombre}</h4>
+                    <div class="d-flex gap-2 justify-content-center align-items-center mb-2">
+                        <h4 class="text-success-emphasis m-0">$${formato.format(objetoProducto.precioFinal)}</h4>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary btn-minus" type="button">-</button>
+                        <input type="number" class="form-control text-center cantidad" value="1" min="1" max="${objetoProducto.stock}">
+                        <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a href="" class="btn btn-primary btnAgregarCarrito" id="${objetoProducto.id_producto}">Agregar al carrito</a>
+                    </div>
+                </div>
+            `;
+    }
+    DOMparalelo.appendChild(div);
+  });
+
+  container_html.appendChild(DOMparalelo);
+  document.querySelectorAll(".card").forEach(card => {
+    const input = card.querySelector(".cantidad");
+    const btnPlus = card.querySelector(".btn-plus");
+    const btnMinus = card.querySelector(".btn-minus");
+    const btnAgregarCarrito = card.querySelector(".btnAgregarCarrito");
+
+    if (!input || !btnPlus || !btnMinus || !btnAgregarCarrito)
+      return;
+
+    btnPlus.addEventListener("click", () => {
+      const value = parseInt(input.value);
+      if (value < parseInt(input.max)) {
+        input.value = (value + 1).toString();
+      }
+    });
+    
+    btnMinus.addEventListener("click", () => {
+      const value = parseInt(input.value);
+      if (value > 1) {
+        input.value = (value - 1).toString();
+      }
+    });
+    
+    input.addEventListener("input", () => {
+      let value = parseInt(input.value);
+      if (isNaN(value) || value < 1) {
+        value = 1;
+      }
+      if (value > parseInt(input.max)) {
+        value = parseInt(input.max);
+      }
+      input.value = value.toString();
+    });
+
+    btnAgregarCarrito.addEventListener("click", () => {
+      event.preventDefault();
+
+      const id_producto = btnAgregarCarrito.id;
+      const cantidad = parseInt(input.value);
+      
+      const carrito = buscarCarrito(1);
+
+      carrito.agregarProducto(id_producto, cantidad, new Date);
+    })
+  });
+}
+
+// CREAMOS LOS PRODUCTOS
 crearProducto(new Producto(1, "Cafetera Nescafé 230v Blanca Genio S Blanco", 179.999, 5, "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTeHC20VN7reUOzJiEHRINl57sjdZEEf1yeaGAoRRqIvTvXYkfCoqcd8a1Lq7rztZI48EpVib6d-XX0nxB_ZJkgP5u4BbI4cJxe2MkwTx0Ad7UVU4yT8kyQN4b-hz0rEQKeTWv8WXuC&usqp=CAc"));
 crearProducto(new Producto(2, "Ventilador Retractil De Techo 4 aspas Color Blanco", 113.149, 50, "https://static.hendel.com/media/catalog/product/cache/b866fd8d147dcce474dc8744e477ca66/4/7/47281-min.jpg"));
 crearProducto(new Producto(3, "Perfume Liquid Brun French Avenue 100ml Edp Arabe", 82.081, 100, "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSa-KyJF7luQhelyspiurmcC6Km3XUmYKlY8yZ1Kgtm2keeLBd4t2JpCOaBVoc3qhGcWwXFRSOGG-kkxVxCkOwjsAwBL0e-opeCKk-Kc8AMpRdrDdNKqK2Wt-BcknTTlp3pXzx0iqQ&usqp=CAc"));
 crearProducto(new Producto(4, "Samsung Galaxy A16 4g 128gb 4 Gb Ram Negro", 257.699, 150, "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTvLAwLAUWKmxIvOkhna6b9oxGfDlTeHTLDZ_pZf6QlFjcSf7ysOKjOt7NxxefKfzMecHXnJ8FqL9LIOT4WIEniqwO6bnToPe4IPjIA_MCgBHhvmsN0R7K5sUMH0PzJ1TNAeC6JhrU&usqp=CAc"));
 crearProducto(new Producto(5, "Colchón KL-Eterna Känn Livet 2 Plazas", 308.999, 200, "https://lacardeuse.vtexassets.com/arquivos/ids/1581280-800-auto?v=639034040604200000&width=800&height=auto&aspect=true"));
 
-Object.values(lista_productos).forEach((producto) => {
-  const container = document.getElementById("catalogo");
-  const card = document.createElement("div");
-  card.classList.add("card", "mb-4");
-  card.innerHTML = `
-      <div class="card-body">
-        <img src="${producto.img}" class="card-img-top" style="width: 200px; height: auto;" alt="${producto.nombre}">
-        <h5 class="card-title">${producto.nombre}</h5>
-        <p class="card-text">Precio: $${producto.precio}</p>
-        <p class="card-text">Stock: ${producto.stock}</p>  
-         <span class="badge bg-danger">10% OFF</span>
-        <button class="btn btn-primary">Agregar al carrito</button>
-      </div>
-        `;
-  container.appendChild(card);
-})
+// CREAMOS EL USUARIO
+registrarUsuario(new Usuario(1, "Maria Pia Buono", "pia@gmail.com", "password", false));
+
+// CREAMOS EL CARRITO
+crearCarrito(1, 1);
+
+// TRAEMOS EL DIV QUE CREAMOS EN EL HTML
+traerDivHtml();
+
+// CREAMOS LAS CARDS Y LAS ANIDAMOS AL DIV DEL HTML
+crearCards();

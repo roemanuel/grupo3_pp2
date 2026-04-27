@@ -1,0 +1,34 @@
+#catalogo {
+  display: flex;
+  margin: 1rem;
+  gap: 1rem;
+}
+
+.imgProducto {
+  width: 100%;
+  height: 15.625rem;
+  object-fit: contain;
+}
+
+.divProductoLista {
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  height: 170px;
+  align-items: center;
+}
+.divProductoLista .imgContenedor {
+  flex-shrink: 0;
+}
+.divProductoLista .imgContenedor img {
+  width: auto;
+  height: 7.5rem;
+}
+
+@media (max-width: 576px) {
+  #productos {
+    flex-direction: column;
+  }
+}
