@@ -20,6 +20,13 @@
             </button>
         </div>
     </nav>
+    <!-- Alertas -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 2000;">
+        <div id="cart-alert" class="alert alert-success alert-dismissible fade" role="alert" style="min-width: 250px;">
+            <span id="cart-alert-msg"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    </div>
     <!-- Contenedor Principal -->
     <div class="container mt-5" id="app">
         <h2 class="fw-bold mb-4 text-center" style="letter-spacing: 1px; color:#374151;">Catálogo de Productos</h2>
@@ -42,6 +49,27 @@
             </div>
         </div>
     </footer>
+    <!-- Modal Carrito -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="cartModalLabel">🛒 Carrito de Compras</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cart-items"></div>
+                    <div class="text-end mt-3">
+                        <span class="fw-bold">Total: $<span id="cart-total">0</span></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="checkout-btn" disabled>Finalizar compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Link a nuestra lógica de JavaScript (Para la Actividad 2) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

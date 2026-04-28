@@ -1,4 +1,22 @@
-import { lista_productos, crearProducto, Producto } from "./tp3_pp2.js";
+import {
+  lista_productos,
+  crearProducto,
+  Producto,
+} from "./business-logic/product.js";
+
+import {
+  agregarAlCarrito,
+  eliminarDelCarrito,
+  actualizarCarritoUI,
+  setupCarritoModal,
+  setupAgregarCarritoDelegado,
+} from "./business-logic/card-logic.js";
+
+// Inicializar eventos de carrito
+document.addEventListener("DOMContentLoaded", () => {
+  setupCarritoModal();
+  setupAgregarCarritoDelegado();
+});
 
 // Agregar los productos del listado en main.js
 crearProducto(
@@ -73,7 +91,7 @@ Object.values(lista_productos).forEach((producto) => {
       </div>
       <div class="product-stock text-secondary mb-2">Stock: ${producto.stock}</div>
       ${descuentoHTML}
-      <button class="btn w-100 mt-auto" style="background-color:#A78BFA; color:#fff; font-weight:600; border:none;">Agregar al carrito</button>
+      <button class="btn w-100 mt-auto add-to-cart-btn" data-id="${producto.id_producto}" style="background-color:#A78BFA; color:#fff; font-weight:600; border:none;">Agregar al carrito</button>
     </div>
   `;
   container.appendChild(col);
