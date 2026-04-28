@@ -51,20 +51,35 @@ class Carrito {
 
   agregarProducto(id_producto, cantidad, id_item) {
     const producto = buscarProducto(id_producto);
-    if (producto) {
+
+    if (!producto) {
+      console.log("No existe el producto");
+      return;
+    }
+
+    const item = this.ItemCarrito.find(
+      i => i.producto_id.id_producto === id_producto
+    );
+
+    if (item) {
+      // validar stock con el total nuevo
       if (hayStockProducto(id_producto, cantidad)) {
-        this.ItemCarrito.push(
-          new ItemCarrito(this.id_carrito, id_item, producto, cantidad),
-        );
+        item.cantidad += cantidad;
         restarStockProducto(id_producto, cantidad);
-        console.log(
-          `✔️  El item ${producto.nombre} se agregó ${cantidad} vez/veces`,
-        );
+        console.log(`✔️ Cantidad actualizada: ${producto.nombre}`);
       } else {
-        console.log(`❌ Stock insuficiente del producto ${producto.nombre}`);
+        console.log(`❌ Stock insuficiente`);
       }
     } else {
-      console.log(`No existe el producto`);
+      if (hayStockProducto(id_producto, cantidad)) {
+        this.ItemCarrito.push(
+          new ItemCarrito(this.id_carrito, id_item, producto, cantidad)
+        );
+        restarStockProducto(id_producto, cantidad);
+        console.log(`✔️ Producto agregado: ${producto.nombre}`);
+      } else {
+        console.log(`❌ Stock insuficiente`);
+      }
     }
   }
 }
@@ -593,14 +608,14 @@ function crearCards() {
         input.value = (value + 1).toString();
       }
     });
-    
+
     btnMinus.addEventListener("click", () => {
       const value = parseInt(input.value);
       if (value > 1) {
         input.value = (value - 1).toString();
       }
     });
-    
+
     input.addEventListener("input", () => {
       let value = parseInt(input.value);
       if (isNaN(value) || value < 1) {
@@ -612,25 +627,27 @@ function crearCards() {
       input.value = value.toString();
     });
 
-    btnAgregarCarrito.addEventListener("click", () => {
+    btnAgregarCarrito.addEventListener("click", (event) => {
       event.preventDefault();
 
-      const id_producto = btnAgregarCarrito.id;
+      const id_producto = parseInt(btnAgregarCarrito.id);
       const cantidad = parseInt(input.value);
-      
+
       const carrito = buscarCarrito(1);
 
-      carrito.agregarProducto(id_producto, cantidad, new Date);
-    })
+      carrito.agregarProducto(id_producto, cantidad, Date.now());
+
+      console.log(carrito);
+    });
   });
 }
 
 // CREAMOS LOS PRODUCTOS
-crearProducto(new Producto(1, "Cafetera Nescafé 230v Blanca Genio S Blanco", 179.999, 5, "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTeHC20VN7reUOzJiEHRINl57sjdZEEf1yeaGAoRRqIvTvXYkfCoqcd8a1Lq7rztZI48EpVib6d-XX0nxB_ZJkgP5u4BbI4cJxe2MkwTx0Ad7UVU4yT8kyQN4b-hz0rEQKeTWv8WXuC&usqp=CAc"));
-crearProducto(new Producto(2, "Ventilador Retractil De Techo 4 aspas Color Blanco", 113.149, 50, "https://static.hendel.com/media/catalog/product/cache/b866fd8d147dcce474dc8744e477ca66/4/7/47281-min.jpg"));
-crearProducto(new Producto(3, "Perfume Liquid Brun French Avenue 100ml Edp Arabe", 82.081, 100, "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSa-KyJF7luQhelyspiurmcC6Km3XUmYKlY8yZ1Kgtm2keeLBd4t2JpCOaBVoc3qhGcWwXFRSOGG-kkxVxCkOwjsAwBL0e-opeCKk-Kc8AMpRdrDdNKqK2Wt-BcknTTlp3pXzx0iqQ&usqp=CAc"));
-crearProducto(new Producto(4, "Samsung Galaxy A16 4g 128gb 4 Gb Ram Negro", 257.699, 150, "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTvLAwLAUWKmxIvOkhna6b9oxGfDlTeHTLDZ_pZf6QlFjcSf7ysOKjOt7NxxefKfzMecHXnJ8FqL9LIOT4WIEniqwO6bnToPe4IPjIA_MCgBHhvmsN0R7K5sUMH0PzJ1TNAeC6JhrU&usqp=CAc"));
-crearProducto(new Producto(5, "Colchón KL-Eterna Känn Livet 2 Plazas", 308.999, 200, "https://lacardeuse.vtexassets.com/arquivos/ids/1581280-800-auto?v=639034040604200000&width=800&height=auto&aspect=true"));
+crearProducto(new Producto(1, "Cafetera Nescafé 230v Blanca Genio S Blanco", 179999, 5, "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTeHC20VN7reUOzJiEHRINl57sjdZEEf1yeaGAoRRqIvTvXYkfCoqcd8a1Lq7rztZI48EpVib6d-XX0nxB_ZJkgP5u4BbI4cJxe2MkwTx0Ad7UVU4yT8kyQN4b-hz0rEQKeTWv8WXuC&usqp=CAc"));
+crearProducto(new Producto(2, "Ventilador Retractil De Techo 4 aspas Color Blanco", 113149, 50, "https://static.hendel.com/media/catalog/product/cache/b866fd8d147dcce474dc8744e477ca66/4/7/47281-min.jpg"));
+crearProducto(new Producto(3, "Perfume Liquid Brun French Avenue 100ml Edp Arabe", 82081, 100, "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSa-KyJF7luQhelyspiurmcC6Km3XUmYKlY8yZ1Kgtm2keeLBd4t2JpCOaBVoc3qhGcWwXFRSOGG-kkxVxCkOwjsAwBL0e-opeCKk-Kc8AMpRdrDdNKqK2Wt-BcknTTlp3pXzx0iqQ&usqp=CAc"));
+crearProducto(new Producto(4, "Samsung Galaxy A16 4g 128gb 4 Gb Ram Negro", 257699, 150, "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTvLAwLAUWKmxIvOkhna6b9oxGfDlTeHTLDZ_pZf6QlFjcSf7ysOKjOt7NxxefKfzMecHXnJ8FqL9LIOT4WIEniqwO6bnToPe4IPjIA_MCgBHhvmsN0R7K5sUMH0PzJ1TNAeC6JhrU&usqp=CAc"));
+crearProducto(new Producto(5, "Colchón KL-Eterna Känn Livet 2 Plazas", 308999, 200, "https://lacardeuse.vtexassets.com/arquivos/ids/1581280-800-auto?v=639034040604200000&width=800&height=auto&aspect=true"));
 
 // CREAMOS EL USUARIO
 registrarUsuario(new Usuario(1, "Maria Pia Buono", "pia@gmail.com", "password", false));
