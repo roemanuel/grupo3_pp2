@@ -4,6 +4,7 @@ import productosController from '../controllers/productosController.js';
 
 const router = express.Router();
 
+
 router.get('/productos', productosController.getAll);
 
 router.get('/productos/:id', productosController.getById);
